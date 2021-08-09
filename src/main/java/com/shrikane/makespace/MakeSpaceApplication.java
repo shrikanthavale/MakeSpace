@@ -47,7 +47,7 @@ public class MakeSpaceApplication implements CommandLineRunner {
         try {
             final String result = processingService.startProcessing(args[0]);
             LOG.info("Finished processing the requests from input text file");
-            System.out.println(result);
+            LOG.info("\n{}", result);
         } catch (InvalidInputException invalidInputException) {
             LOG.error("ERROR : Error occurred during processing of the input '{}'", invalidInputException.getMessage(), invalidInputException);
         } catch (final IOException ioException) {

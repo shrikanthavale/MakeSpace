@@ -5,11 +5,8 @@ import com.shrikane.makespace.dto.RoomName;
 import com.shrikane.makespace.entity.BookedRoom;
 import com.shrikane.makespace.repository.BookedRoomRepository;
 import com.shrikane.makespace.service.BookRoomService;
-import com.shrikane.makespace.service.CheckAvailabilityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class BookRoomServiceImpl implements BookRoomService {

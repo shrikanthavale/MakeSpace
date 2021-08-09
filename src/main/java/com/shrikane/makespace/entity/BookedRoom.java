@@ -12,7 +12,6 @@ public class BookedRoom {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
     private RoomName roomName;
     private String startTime;
     private String endTime;

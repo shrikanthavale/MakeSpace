@@ -49,38 +49,45 @@ public class ProcessingServiceImpl implements ProcessingService {
         final StringBuilder finalResult = new StringBuilder();
         for (final RequestDTO requestDTO : processedInputs) {
             if (requestDTO instanceof BookRequestDTO) {
-                final BookRequestDTO bookRequest = (BookRequestDTO) requestDTO;
-
-                if (!validationService.validate(bookRequest)) {
-                    finalResult.append(generateOutput(requestDTO, "INCORRECT_INPUT"));
-                    continue;
-                }
-
-                final RoomName bestRoomAvailable = checkAvailabilityService.findBestRoomAvailable(bookRequest);
-                if (bestRoomAvailable == null) {
-                    finalResult.append(generateOutput(requestDTO, "NO_VACANT_ROOM"));
-                } else {
-                    bookRoomService.bookRoom(bookRequest, bestRoomAvailable);
-                    finalResult.append(generateOutput(requestDTO, bestRoomAvailable.getName()));
-                }
+                processBookRoomRequest(finalResult, requestDTO);
             } else if (requestDTO instanceof VacancyRequestDTO) {
-
-                final VacancyRequestDTO vacancyRequest = (VacancyRequestDTO) requestDTO;
-                if (!validationService.validate(vacancyRequest)) {
-                    finalResult.append(generateOutput(requestDTO, "INCORRECT_INPUT"));
-                    continue;
-                }
-
-                List<RoomName> roomNames = checkAvailabilityService.checkAvailableRooms(vacancyRequest);
-                if (CollectionUtils.isEmpty(roomNames)) {
-                    finalResult.append(generateOutput(requestDTO, "NO_VACANT_ROOM"));
-                } else {
-                    finalResult.append(generateOutput(requestDTO, roomNames.stream().map(RoomName::getName).collect(Collectors.joining(" "))));
-                }
+                processVacancyRequest(finalResult, requestDTO);
             }
         }
 
         return finalResult.toString();
+    }
+
+    private void processVacancyRequest(StringBuilder finalResult, RequestDTO requestDTO) {
+        final VacancyRequestDTO vacancyRequest = (VacancyRequestDTO) requestDTO;
+        if (!validationService.validate(vacancyRequest)) {
+            finalResult.append(generateOutput(requestDTO, "INCORRECT_INPUT"));
+            return;
+        }
+
+        List<RoomName> roomNames = checkAvailabilityService.checkAvailableRooms(vacancyRequest);
+        if (CollectionUtils.isEmpty(roomNames)) {
+            finalResult.append(generateOutput(requestDTO, "NO_VACANT_ROOM"));
+        } else {
+            finalResult.append(generateOutput(requestDTO, roomNames.stream().map(RoomName::getName).collect(Collectors.joining(" "))));
+        }
+    }
+
+    private void processBookRoomRequest(StringBuilder finalResult, RequestDTO requestDTO) {
+        final BookRequestDTO bookRequest = (BookRequestDTO) requestDTO;
+
+        if (!validationService.validate(bookRequest)) {
+            finalResult.append(generateOutput(requestDTO, "INCORRECT_INPUT"));
+            return;
+        }
+
+        final RoomName bestRoomAvailable = checkAvailabilityService.findBestRoomAvailable(bookRequest);
+        if (bestRoomAvailable == null) {
+            finalResult.append(generateOutput(requestDTO, "NO_VACANT_ROOM"));
+        } else {
+            bookRoomService.bookRoom(bookRequest, bestRoomAvailable);
+            finalResult.append(generateOutput(requestDTO, bestRoomAvailable.getName()));
+        }
     }
 
     private String generateOutput(
