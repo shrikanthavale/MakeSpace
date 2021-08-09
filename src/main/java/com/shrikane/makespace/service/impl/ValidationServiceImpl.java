@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 
 @Service
 public class ValidationServiceImpl implements ValidationService {
-    private static final Logger LOG = LoggerFactory.getLogger(ProcessingServiceImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ValidationServiceImpl.class);
     private static final Pattern TIME_FORMAT_PATTERN = Pattern.compile("^(0[0-9]|1[0-9]|2[0-3]):([0][0]|[1][5]|[3][0]|[4][5])$", Pattern.DOTALL);
 
     @Override
@@ -22,9 +22,8 @@ public class ValidationServiceImpl implements ValidationService {
 
         // person capacity validation
         final String personCapacity = bookRequestDTO.getPersonCapacity();
-        final int capacity;
         try {
-            capacity = Integer.parseInt(personCapacity);
+            Integer.parseInt(personCapacity);
         } catch (final NumberFormatException numberFormatException) {
             LOG.error("ERROR : Invalid person capacity entered");
             return false;

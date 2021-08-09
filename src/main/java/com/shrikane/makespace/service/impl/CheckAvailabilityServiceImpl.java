@@ -6,7 +6,6 @@ import com.shrikane.makespace.dto.VacancyRequestDTO;
 import com.shrikane.makespace.entity.BookedRoom;
 import com.shrikane.makespace.repository.BookedRoomRepository;
 import com.shrikane.makespace.service.CheckAvailabilityService;
-import com.shrikane.makespace.util.TimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
