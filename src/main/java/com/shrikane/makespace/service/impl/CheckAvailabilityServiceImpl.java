@@ -15,7 +15,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class CheckAvailabilityServiceImpl implements CheckAvailabilityService {
@@ -35,17 +34,17 @@ public class CheckAvailabilityServiceImpl implements CheckAvailabilityService {
         final List<RoomName> availableRooms = new ArrayList<>(3);
 
         if (noSlotsBookedInRoom(bookedRooms, RoomName.C_CAVE)
-                || isSlotAvailable(bookedRooms, RoomName.C_CAVE, startTime, endTime).isPresent()) {
+                || !isSlotTaken(bookedRooms, RoomName.C_CAVE, startTime, endTime)) {
             availableRooms.add(RoomName.C_CAVE);
         }
 
         if (noSlotsBookedInRoom(bookedRooms, RoomName.D_TOWER)
-                || isSlotAvailable(bookedRooms, RoomName.D_TOWER, startTime, endTime).isPresent()) {
+                || !isSlotTaken(bookedRooms, RoomName.D_TOWER, startTime, endTime)) {
             availableRooms.add(RoomName.D_TOWER);
         }
 
         if (noSlotsBookedInRoom(bookedRooms, RoomName.G_MANSION)
-                || isSlotAvailable(bookedRooms, RoomName.G_MANSION, startTime, endTime).isPresent()) {
+                || !isSlotTaken(bookedRooms, RoomName.G_MANSION, startTime, endTime)) {
             availableRooms.add(RoomName.G_MANSION);
         }
 
@@ -82,23 +81,22 @@ public class CheckAvailabilityServiceImpl implements CheckAvailabilityService {
         return null;
     }
 
-    private Optional<BookedRoom> isSlotAvailable(
+    private boolean isSlotTaken(
             final List<BookedRoom> bookedRooms,
             final RoomName roomName,
             final LocalDateTime startTime,
             final LocalDateTime endTime) {
         return bookedRooms.stream()
                 .filter(bookedRoom -> bookedRoom.getRoomName() == roomName)
-                .filter(bookedRoom -> !inBetweenInclusive(bookedRoom.getStartTimeInLocalDate(), startTime, endTime))
-                .filter(bookedRoom -> !inBetweenInclusive(bookedRoom.getEndTimeInLocalDate(), startTime, endTime))
-                .findAny();
+                .anyMatch(bookedRoom -> isSlotOverlapping(startTime, endTime, bookedRoom.getStartTimeInLocalDate(), bookedRoom.getEndTimeInLocalDate()));
     }
 
-    private boolean inBetweenInclusive(
-            final LocalDateTime dateToCheck,
+    private boolean isSlotOverlapping(
+            final LocalDateTime startDateToCheck,
+            final LocalDateTime endDateToCheck,
             final LocalDateTime startDate,
             final LocalDateTime endDate) {
-        return dateToCheck.isAfter(startDate) && dateToCheck.isBefore(endDate);
+        return startDateToCheck.isBefore(endDate) && startDate.isBefore(endDateToCheck);
     }
 
     private boolean noSlotsBookedInRoom(final List<BookedRoom> bookedRooms, final RoomName roomName) {

@@ -8,6 +8,4 @@ import java.util.List;
 
 public interface BookRoomService {
     void bookRoom(final BookRequestDTO bookRequestDTO, final RoomName roomName);
-
-    List<BookedRoom> fetchBookedRooms(final RoomName roomName);
 }

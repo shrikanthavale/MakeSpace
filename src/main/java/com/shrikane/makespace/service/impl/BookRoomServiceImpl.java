@@ -33,9 +33,4 @@ public class BookRoomServiceImpl implements BookRoomService {
         bookedRoom.setEndTime(bookRequestDTO.getEndTime());
         bookedRoomRepository.save(bookedRoom);
     }
-
-    @Override
-    public List<BookedRoom> fetchBookedRooms(final RoomName roomName) {
-        return bookedRoomRepository.findByRoomName(roomName);
-    }
 }
