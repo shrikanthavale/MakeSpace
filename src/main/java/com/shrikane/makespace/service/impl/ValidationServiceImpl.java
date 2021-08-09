@@ -30,11 +30,6 @@ public class ValidationServiceImpl implements ValidationService {
             return false;
         }
 
-        if (capacity < 2 || capacity > 20) {
-            LOG.error("ERROR : Invalid person capacity entered, person capacity should be between 2 and 20 (inclusive)");
-            return false;
-        }
-
         return validateTimeFormats(bookRequestDTO);
     }
 
