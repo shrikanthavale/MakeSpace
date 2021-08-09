@@ -6,6 +6,7 @@ import com.shrikane.makespace.dto.VacancyRequestDTO;
 import com.shrikane.makespace.entity.BookedRoom;
 import com.shrikane.makespace.repository.BookedRoomRepository;
 import com.shrikane.makespace.service.CheckAvailabilityService;
+import com.shrikane.makespace.util.TimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -14,6 +15,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -32,6 +34,10 @@ public class CheckAvailabilityServiceImpl implements CheckAvailabilityService {
         final LocalDateTime startTime = LocalDate.now().atTime(LocalTime.parse(vacancyRequestDTO.getStartTime()));
         final LocalDateTime endTime = LocalDate.now().atTime(LocalTime.parse(vacancyRequestDTO.getEndTime()));
         final List<RoomName> availableRooms = new ArrayList<>(3);
+
+        if (isSlotRequestedDuringBufferTime(startTime, endTime)) {
+            return Collections.emptyList();
+        }
 
         if (noSlotsBookedInRoom(bookedRooms, RoomName.C_CAVE)
                 || !isSlotTaken(bookedRooms, RoomName.C_CAVE, startTime, endTime)) {
@@ -101,5 +107,15 @@ public class CheckAvailabilityServiceImpl implements CheckAvailabilityService {
 
     private boolean noSlotsBookedInRoom(final List<BookedRoom> bookedRooms, final RoomName roomName) {
         return bookedRooms.stream().noneMatch(bookedRoom -> bookedRoom.getRoomName() == roomName);
+    }
+
+    private boolean isSlotRequestedDuringBufferTime(
+            final LocalDateTime startTime,
+            final LocalDateTime endTime) {
+        return (
+                (startTime.isBefore(BUFFER_TIME_1_END) && BUFFER_TIME_1_START.isBefore(endTime))
+                        || (startTime.isBefore(BUFFER_TIME_2_END) && BUFFER_TIME_2_START.isBefore(endTime))
+                        || (startTime.isBefore(BUFFER_TIME_3_END) && BUFFER_TIME_3_START.isBefore(endTime))
+        );
     }
 }

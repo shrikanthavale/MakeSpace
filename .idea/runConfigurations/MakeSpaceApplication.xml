@@ -2,12 +2,22 @@
   <configuration default="false" name="MakeSpaceApplication" type="Application" factoryName="Application" nameIsGenerated="true">
     <option name="MAIN_CLASS_NAME" value="com.shrikane.makespace.MakeSpaceApplication" />
     <module name="MakeSpace.main" />
-    <option name="PROGRAM_PARAMETERS" value="E:\Developer\springprojects\MakeSpace\input.txt" />
+    <option name="PROGRAM_PARAMETERS" value="C:\dev\MakeSpace-master\input.txt" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="com.shrikane.makespace.*" />
         <option name="ENABLED" value="true" />
       </pattern>
+    </extension>
+    <extension name="net.ashald.envfile">
+      <option name="IS_ENABLED" value="false" />
+      <option name="IS_SUBST" value="false" />
+      <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
+      <option name="IS_IGNORE_MISSING_FILES" value="false" />
+      <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
+      <ENTRIES>
+        <ENTRY IS_ENABLED="true" PARSER="runconfig" />
+      </ENTRIES>
     </extension>
     <method v="2">
       <option name="Make" enabled="true" />

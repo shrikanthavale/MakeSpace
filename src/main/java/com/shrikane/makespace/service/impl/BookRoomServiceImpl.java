@@ -15,14 +15,10 @@ import java.util.List;
 public class BookRoomServiceImpl implements BookRoomService {
 
     private final BookedRoomRepository bookedRoomRepository;
-    private final CheckAvailabilityService checkAvailabilityService;
 
     @Autowired
-    public BookRoomServiceImpl(
-            final BookedRoomRepository bookedRoomRepository,
-            final CheckAvailabilityService checkAvailabilityService) {
+    public BookRoomServiceImpl(final BookedRoomRepository bookedRoomRepository) {
         this.bookedRoomRepository = bookedRoomRepository;
-        this.checkAvailabilityService = checkAvailabilityService;
     }
 
     @Override

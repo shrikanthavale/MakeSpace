@@ -35,6 +35,12 @@ public class CheckAvailabilityServiceImplTest {
 
     @Test
     public void testCheckAvailableRooms() {
+        // case 0 : room requested during buffer time
+        assertThat(bookedRoomRepository.findAll()).isEmpty();
+        assertThat(checkAvailabilityService.checkAvailableRooms(new VacancyRequestDTO("09:00", "09:15"))).isNullOrEmpty();
+        assertThat(checkAvailabilityService.checkAvailableRooms(new VacancyRequestDTO("13:15", "13:45"))).isNullOrEmpty();
+        assertThat(checkAvailabilityService.checkAvailableRooms(new VacancyRequestDTO("18:45", "19:00"))).isNullOrEmpty();
+
         // case 1 : no rooms reserved at all
         assertThat(bookedRoomRepository.findAll()).isEmpty();
         assertThat(checkAvailabilityService.checkAvailableRooms(new VacancyRequestDTO("10:00", "12:00"))).containsExactly(RoomName.values());
@@ -56,6 +62,12 @@ public class CheckAvailabilityServiceImplTest {
 
     @Test
     public void testFindBestRoomAvailable() {
+        // case 0 : room requested during buffer time
+        assertThat(bookedRoomRepository.findAll()).isEmpty();
+        assertThat(checkAvailabilityService.findBestRoomAvailable(new BookRequestDTO("09:00", "09:15", "2"))).isNull();
+        assertThat(checkAvailabilityService.findBestRoomAvailable(new BookRequestDTO("13:15", "13:45", "3"))).isNull();
+        assertThat(checkAvailabilityService.findBestRoomAvailable(new BookRequestDTO("18:45", "19:00", "5"))).isNull();
+
         // case 1 : no rooms reserved at all
         assertThat(bookedRoomRepository.findAll()).isEmpty();
         assertThat(checkAvailabilityService.findBestRoomAvailable(new BookRequestDTO("11:00", "11:45", "2"))).isEqualTo(RoomName.C_CAVE);

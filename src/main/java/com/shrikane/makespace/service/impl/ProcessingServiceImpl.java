@@ -5,10 +5,7 @@ import com.shrikane.makespace.dto.RequestDTO;
 import com.shrikane.makespace.dto.RoomName;
 import com.shrikane.makespace.dto.VacancyRequestDTO;
 import com.shrikane.makespace.exception.InvalidInputException;
-import com.shrikane.makespace.service.BookRoomService;
-import com.shrikane.makespace.service.CheckAvailabilityService;
-import com.shrikane.makespace.service.ProcessingService;
-import com.shrikane.makespace.service.ReadFileService;
+import com.shrikane.makespace.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,15 +22,18 @@ public class ProcessingServiceImpl implements ProcessingService {
     private final ReadFileService readFileService;
     private final BookRoomService bookRoomService;
     private final CheckAvailabilityService checkAvailabilityService;
+    private final ValidationService validationService;
 
     @Autowired
     public ProcessingServiceImpl(
             final ReadFileService readFileService,
             final BookRoomService bookRoomService,
-            final CheckAvailabilityServiceImpl checkAvailabilityService) {
+            final CheckAvailabilityServiceImpl checkAvailabilityService,
+            final ValidationService validationService) {
         this.readFileService = readFileService;
         this.bookRoomService = bookRoomService;
         this.checkAvailabilityService = checkAvailabilityService;
+        this.validationService = validationService;
     }
 
     @Override
@@ -48,22 +48,35 @@ public class ProcessingServiceImpl implements ProcessingService {
         final StringBuilder finalResult = new StringBuilder();
         for (final RequestDTO requestDTO : processedInputs) {
             if (requestDTO instanceof BookRequestDTO) {
-                final RoomName bestRoomAvailable = checkAvailabilityService.findBestRoomAvailable((BookRequestDTO) requestDTO);
+                final BookRequestDTO bookRequest = (BookRequestDTO) requestDTO;
+
+                if (!validationService.validate(bookRequest)) {
+                    finalResult.append(generateOutput(requestDTO, "INCORRECT_INPUT"));
+                    continue;
+                }
+
+                final RoomName bestRoomAvailable = checkAvailabilityService.findBestRoomAvailable(bookRequest);
                 if (bestRoomAvailable == null) {
                     finalResult.append(generateOutput(requestDTO, "NO_VACANT_ROOM"));
                 } else {
-                    bookRoomService.bookRoom((BookRequestDTO) requestDTO, bestRoomAvailable);
+                    bookRoomService.bookRoom(bookRequest, bestRoomAvailable);
                     finalResult.append(generateOutput(requestDTO, bestRoomAvailable.name()));
                 }
             } else if (requestDTO instanceof VacancyRequestDTO) {
-                List<RoomName> roomNames = checkAvailabilityService.checkAvailableRooms((VacancyRequestDTO) requestDTO);
+
+                final VacancyRequestDTO vacancyRequest = (VacancyRequestDTO) requestDTO;
+                if (!validationService.validate(vacancyRequest)) {
+                    finalResult.append(generateOutput(requestDTO, "INCORRECT_INPUT"));
+                    continue;
+                }
+
+                List<RoomName> roomNames = checkAvailabilityService.checkAvailableRooms(vacancyRequest);
                 if (CollectionUtils.isEmpty(roomNames)) {
                     finalResult.append(generateOutput(requestDTO, "NO_VACANT_ROOM"));
                 } else {
                     finalResult.append(generateOutput(requestDTO, roomNames.toString()));
                 }
             }
-            finalResult.append(System.lineSeparator());
         }
 
         return finalResult.toString();
@@ -82,6 +95,6 @@ public class ProcessingServiceImpl implements ProcessingService {
                 .append(" ")
                 .append(requestDTO instanceof BookRequestDTO ? ((BookRequestDTO) requestDTO).getPersonCapacity() : " ");
         output.append(result);
-        return input.append("-->").append(" ").append(output).toString();
+        return input.append("-->").append(" ").append(output).append(System.lineSeparator()).toString();
     }
 }

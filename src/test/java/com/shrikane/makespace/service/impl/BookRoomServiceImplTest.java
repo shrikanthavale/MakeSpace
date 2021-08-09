@@ -5,14 +5,11 @@ import com.shrikane.makespace.dto.RoomName;
 import com.shrikane.makespace.entity.BookedRoom;
 import com.shrikane.makespace.repository.BookedRoomRepository;
 import com.shrikane.makespace.service.BookRoomService;
-import com.shrikane.makespace.service.CheckAvailabilityService;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -26,12 +23,9 @@ public class BookRoomServiceImplTest {
     @Autowired
     private BookedRoomRepository bookedRoomRepository;
 
-    @Autowired
-    private CheckAvailabilityService checkAvailabilityService;
-
     @Before
     public void setup() {
-        bookRoomService = new BookRoomServiceImpl(bookedRoomRepository, checkAvailabilityService);
+        bookRoomService = new BookRoomServiceImpl(bookedRoomRepository);
     }
 
     @Test
