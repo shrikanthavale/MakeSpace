@@ -5,6 +5,7 @@ import com.shrikane.makespace.dto.RoomName;
 import com.shrikane.makespace.entity.BookedRoom;
 import com.shrikane.makespace.repository.BookedRoomRepository;
 import com.shrikane.makespace.service.BookRoomService;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,5 +37,10 @@ public class BookRoomServiceImplTest {
         assertThat(bookedRoomRepository.findAll())
                 .extracting(BookedRoom::getId, BookedRoom::getRoomName, BookedRoom::getStartTime, BookedRoom::getEndTime)
                 .containsExactly(tuple(1L, RoomName.C_CAVE, "09:30", "10:30"));
+    }
+
+    @After
+    public void tearDown() {
+        bookedRoomRepository.deleteAll();
     }
 }

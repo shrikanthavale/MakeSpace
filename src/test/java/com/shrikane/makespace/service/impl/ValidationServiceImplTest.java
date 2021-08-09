@@ -29,7 +29,6 @@ public class ValidationServiceImplTest {
     @Test
     public void testValidateBookRoomRequest() {
         assertThat(validationService.validate(new BookRequestDTO("09:00", "10:00", "ab"))).isFalse();
-        assertThat(validationService.validate(new BookRequestDTO("09:00", "10:00", "35"))).isFalse();
         assertThat(validationService.validate(new BookRequestDTO("09:05", "10:00", "15"))).isFalse();
         assertThat(validationService.validate(new BookRequestDTO("09:00", "10:05", "15"))).isFalse();
         assertThat(validationService.validate(new BookRequestDTO("09:03", "10:00", "15"))).isFalse();
