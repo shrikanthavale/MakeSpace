@@ -14,6 +14,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ProcessingServiceImpl implements ProcessingService {
@@ -60,7 +61,7 @@ public class ProcessingServiceImpl implements ProcessingService {
                     finalResult.append(generateOutput(requestDTO, "NO_VACANT_ROOM"));
                 } else {
                     bookRoomService.bookRoom(bookRequest, bestRoomAvailable);
-                    finalResult.append(generateOutput(requestDTO, bestRoomAvailable.name()));
+                    finalResult.append(generateOutput(requestDTO, bestRoomAvailable.getName()));
                 }
             } else if (requestDTO instanceof VacancyRequestDTO) {
 
@@ -74,7 +75,7 @@ public class ProcessingServiceImpl implements ProcessingService {
                 if (CollectionUtils.isEmpty(roomNames)) {
                     finalResult.append(generateOutput(requestDTO, "NO_VACANT_ROOM"));
                 } else {
-                    finalResult.append(generateOutput(requestDTO, roomNames.toString()));
+                    finalResult.append(generateOutput(requestDTO, roomNames.stream().map(RoomName::getName).collect(Collectors.joining(" "))));
                 }
             }
         }
