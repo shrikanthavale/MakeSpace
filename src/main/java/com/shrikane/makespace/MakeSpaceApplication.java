@@ -11,6 +11,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Import;
 
 import java.io.IOException;
+import java.util.Properties;
 
 @Import(MakeSpaceConfiguration.class)
 @SpringBootApplication
@@ -26,8 +27,12 @@ public class MakeSpaceApplication implements CommandLineRunner {
     }
 
     public static void main(String[] args) {
-        LOG.info("STARTING THE APPLICATION");
-        SpringApplication.run(MakeSpaceApplication.class, args);
+        SpringApplication application = new SpringApplication(MakeSpaceApplication.class);
+        Properties properties = new Properties();
+        properties.setProperty("spring.main.banner-mode", "off");
+        properties.setProperty("logging.pattern.console", "");
+        application.setDefaultProperties(properties);
+        application.run(args);
         LOG.info("APPLICATION FINISHED");
     }
 
@@ -47,7 +52,7 @@ public class MakeSpaceApplication implements CommandLineRunner {
         try {
             final String result = processingService.startProcessing(args[0]);
             LOG.info("Finished processing the requests from input text file");
-            LOG.info("\n{}", result);
+            System.out.println(result);
         } catch (InvalidInputException invalidInputException) {
             LOG.error("ERROR : Error occurred during processing of the input '{}'", invalidInputException.getMessage(), invalidInputException);
         } catch (final IOException ioException) {

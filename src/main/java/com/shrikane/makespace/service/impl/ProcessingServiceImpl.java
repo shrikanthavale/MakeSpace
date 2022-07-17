@@ -98,6 +98,7 @@ public class ProcessingServiceImpl implements ProcessingService {
         input.append(String.format("%-10s  %s  %s", requestDTO.getActionRequested(), requestDTO.getStartTime(), requestDTO.getEndTime()))
                 .append(String.format("  %-5s", requestDTO instanceof BookRequestDTO ? ((BookRequestDTO) requestDTO).getPersonCapacity() : ""));
         output.append(result);
-        return input.append(String.format("%-5s","-->")).append(output).append(System.lineSeparator()).toString();
+//        return input.append(String.format("%-5s","-->")).append(output).append(System.lineSeparator()).toString();
+        return output.append(System.lineSeparator()).toString();
     }
 }
